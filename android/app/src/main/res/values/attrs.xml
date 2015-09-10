@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--圆角按钮-->
+    <declare-styleable name="RoundCornerButton">
+        <attr name="round_stroke_width" format="dimension"/>
+        <attr name="round_stroke_color" format="color"/>
+        <attr name="round_btn_bg" format="color"/>
+        <attr name="round_btn_active_bg" format="color"/>
+        <attr name="round_btn_disable_bg" format="color"/>
+        <attr name="round_btn_disable_text_color" format="color"/>
+        <attr name="round_btn_radio_size" format="dimension"/>
+    </declare-styleable>
+</resources>

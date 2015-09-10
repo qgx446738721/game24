@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--基础颜色-->
+    <color name="transparent">#00ffffff</color>
+    <color name="clouds">#ECF0F1</color>
+    <color name="white">#fff</color>
+    <color name="alpha_white">#ccFFFFFF</color>
+    <color name="gray">#aaa</color>
+    <color name="divide_color">#dedede</color>
+    <color name="red">#F44336</color>
+    <color name="red_light">#FF7370</color>
+    <color name="danger">#FF4445</color>
+    <color name="yellow">#FFF7D23E</color>
+    <color name="yellow_light">#FFED9E</color>
+    <color name="green">#4CD964</color>
+    <color name="green_dark">#4A980F</color>
+    <color name="green_light">#6CF984</color>
+    <color name="pink">#FF9FA2</color>
+    <color name="blue">#FF375BF1</color>
+    <color name="tianyi_blue">#66ccff</color>
+    <color name="no_picture_color">#dedede</color>
+</resources>

@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
+
+    <voiddog.org.game24.ui.MainHeadView
+        android:id="@+id/main_head"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"/>
+
+    <LinearLayout
+        android:id="@+id/lin_menu"
+        android:orientation="vertical"
+        android:layout_below="@id/main_head"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <voiddog.org.game24.ui.RoundCornerButton
+            android:id="@+id/rcb_start"
+            android:text="@string/begin_game"
+            android:textColor="@color/white"
+            android:textSize="@dimen/default_text_size_big"
+            app:round_btn_radio_size="@dimen/default_radius"
+            app:round_btn_bg="@color/danger"
+            app:round_btn_active_bg="@color/white"
+            android:layout_width="@dimen/main_button_width"
+            android:layout_height="wrap_content" />
+
+        <voiddog.org.game24.ui.RoundCornerButton
+            android:id="@+id/rcb_rank"
+            android:text="@string/rank"
+            android:layout_marginTop="@dimen/default_dis_size_big"
+            android:textColor="@color/danger"
+            android:textSize="@dimen/default_text_size_big"
+            app:round_btn_radio_size="@dimen/default_radius"
+            app:round_btn_bg="@color/transparent"
+            app:round_stroke_color="@color/danger"
+            app:round_stroke_width="2dp"
+            app:round_btn_active_bg="@color/danger"
+            android:layout_width="@dimen/main_button_width"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>
