@@ -27,6 +27,13 @@ public class GameActivity extends BaseActivity{
         gameFragment = GameFragment_.builder().build();
     }
 
+    @Override
+    public void finish() {
+        MainActivity_.intent(this).start();
+        overridePendingTransition(R.anim.alpha_in, R.anim.slide_out_to_bottom);
+        super.finish();
+    }
+
     @AfterViews
     void setupViews(){
         addFragment(gameFragment);

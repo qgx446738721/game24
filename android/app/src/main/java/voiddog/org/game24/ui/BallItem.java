@@ -1,7 +1,9 @@
 package voiddog.org.game24.ui;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
@@ -9,6 +11,9 @@ import com.facebook.rebound.SpringListener;
 import com.facebook.rebound.SpringSystem;
 
 import java.util.Random;
+
+import de.greenrobot.event.EventBus;
+import voiddog.org.game24.event.MarginItemFinishEvent;
 
 /**
  * 球体，没有数字
@@ -126,6 +131,52 @@ public class BallItem extends NumberItem{
 
             mV.x = vx;
             mV.y = vy;
+        }
+    }
+
+    /**
+     * ValueAnimation
+     */
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        if(mStatus == Status.MARGIN
+                || mStatus == Status.SEPARA){
+            float value = (float) animation.getAnimatedValue();
+            this.setX(value*(marginX - startX) + startX);
+            this.setY(value*(marginY - startY) + startY);
+
+            int r, g, b, rr, gg, bb;
+
+            rr = Color.red(marginColor);
+            gg = Color.green(marginColor);
+            bb = Color.blue(marginColor);
+            r = Color.red(startColor);
+            g = Color.green(startColor);
+            b = Color.blue(startColor);
+
+            r = (int) (value*(rr - r) + r);
+            g = (int) (value*(gg - g) + g);
+            b = (int) (value*(bb - b) + b);
+
+            int finalColor = Color.rgb(r, g, b);
+            mCircle.setColor(finalColor);
+
+            int colors[] = {
+                    finalColor,
+                    finalColor&0x00ffffff,
+                    0x00ffffff
+            };
+            mPaddingCircle.setColors(colors);
+
+            invalidate();
+
+            if(value == 1.0f){
+                if(mStatus == Status.MARGIN) {
+                }
+                else{
+                    setToNormal();
+                }
+            }
         }
     }
 

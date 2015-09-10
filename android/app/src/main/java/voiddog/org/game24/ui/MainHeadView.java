@@ -1,5 +1,6 @@
 package voiddog.org.game24.ui;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,10 +37,15 @@ public class MainHeadView extends FrameLayout implements Runnable{
     int values[] = {29, 8, 10, 12, 14};
     //第一次加载
     boolean isFirstLoad = true;
+    //弹簧动画
     Spring spring;
+    //text 退出动画
+    ValueAnimator textExitAnim = new ValueAnimator();
 
     //线程是否继续运行
     boolean mIsThreadRunning = false;
+    //退出call back
+    OnExitCallBack exitCallBack;
 
     public MainHeadView(Context context) {
         super(context);
@@ -56,13 +63,47 @@ public class MainHeadView extends FrameLayout implements Runnable{
     }
 
     /**
+     * 播放退出动画
+     */
+    public void playExitAnimation(OnExitCallBack onExitCallBack){
+        this.exitCallBack = onExitCallBack;
+
+        int width = getMeasuredWidth();
+
+        int endX[] = new int[5];
+        int endY[] = new int[5];
+
+        endX[0] = width >> 1;
+        endY[0] = -ball[0].getSize();
+
+        endX[3] = width - (ball[3].getSize()<<1);
+        endY[3] = -ball[3].getSize();
+
+        endX[4] = width;
+        endY[4] = -ball[4].getSize();
+
+        endX[1] = ball[1].getSize();
+        endY[1] = -ball[1].getSize();
+
+        endX[2] = -ball[2].getSize();
+        endY[2] = -ball[2].getSize();
+
+        for(int i = 0; i < ball.length; i++){
+            ball[i].setVisibility(VISIBLE);
+            ball[i].setMarginPoint(endX[i], endY[i], ball[i].getColorByValue(ball[i].getValue()));
+        }
+
+        textExitAnim.start();
+    }
+
+    /**
      * 开始线程
      */
     public void startThread(){
         if(mIsThreadRunning){
             mIsThreadRunning = false;
 
-            UIHandler.sendEmptyMessageDelayed(0, 1000, new Handler.Callback() {
+            UIHandler.sendEmptyMessageDelayed(0, 500, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
                     createAndRunThread();
@@ -96,6 +137,11 @@ public class MainHeadView extends FrameLayout implements Runnable{
         spring = springSystem.createSpring();
         spring.setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(25, 6));
         spring.addListener(new TextExpandingSpring());
+
+        textExitAnim.setFloatValues(1.0f, 0.0f);
+        textExitAnim.setDuration(300);
+        textExitAnim.setInterpolator(new AccelerateInterpolator());
+        textExitAnim.addUpdateListener(new TextExitAnimListener());
 
         ball = new BallItem[5];
         title = new TextView(getContext());
@@ -134,7 +180,7 @@ public class MainHeadView extends FrameLayout implements Runnable{
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if(isFirstLoad){
             isFirstLoad = false;
-            UIHandler.sendEmptyMessageDelayed(0, 1000, new Handler.Callback() {
+            UIHandler.sendEmptyMessageDelayed(0, 300, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
                     playEnterAnimation();
@@ -142,7 +188,7 @@ public class MainHeadView extends FrameLayout implements Runnable{
                 }
             });
 
-            UIHandler.sendEmptyMessageDelayed(0, 1200, new Handler.Callback() {
+            UIHandler.sendEmptyMessageDelayed(0, 500, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
                     title.setVisibility(VISIBLE);
@@ -212,13 +258,6 @@ public class MainHeadView extends FrameLayout implements Runnable{
         }
     }
 
-    /**
-     * 播放退出动画
-     */
-    void playExitAnimation(){
-
-    }
-
     @Override
     public void run() {
         while(mIsThreadRunning){
@@ -249,5 +288,22 @@ public class MainHeadView extends FrameLayout implements Runnable{
             title.setScaleY((float) spring.getCurrentValue());
             title.setScaleX((float) spring.getCurrentValue());
         }
+    }
+
+    class TextExitAnimListener implements ValueAnimator.AnimatorUpdateListener{
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            float value = (float) animation.getAnimatedValue();
+            title.setScaleX(value);
+            title.setScaleY(value);
+            if(value == 0.0f && exitCallBack != null){
+                exitCallBack.onExit();
+            }
+        }
+    }
+
+    public interface OnExitCallBack{
+        void onExit();
     }
 }

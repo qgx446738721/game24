@@ -6,6 +6,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -34,6 +35,8 @@ public class MainActivity extends BaseActivity{
     LinearLayout lin_menu;
     @ViewById
     MainHeadView main_head;
+    @ViewById
+    Button rcb_start;
 
     //按钮移动动画
     Spring mMovingSpring;
@@ -70,7 +73,7 @@ public class MainActivity extends BaseActivity{
             @Override
             public void onGlobalLayout() {
                 lin_menu.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                UIHandler.sendEmptyMessageDelayed(0, 300, new Handler.Callback() {
+                UIHandler.sendEmptyMessageDelayed(0, 1000, new Handler.Callback() {
                     @Override
                     public boolean handleMessage(Message msg) {
                         playMoveButtonAnim();
@@ -98,7 +101,15 @@ public class MainActivity extends BaseActivity{
 
     @Click(R.id.rcb_start)
     void startGame(){
-        GameActivity_.intent(this).start();
+        //只能点击一次
+        rcb_start.setOnClickListener(null);
+        main_head.playExitAnimation(new MainHeadView.OnExitCallBack() {
+            @Override
+            public void onExit() {
+                GameActivity_.intent(MainActivity.this).start();
+                finish();
+            }
+        });
     }
 
     class MenuMovingController extends SimpleSpringListener{
