@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.facebook.rebound.SimpleSpringListener;
@@ -15,13 +17,16 @@ import com.facebook.rebound.SpringSystem;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.AnimationRes;
 
 import voiddog.org.game24.R;
 import voiddog.org.game24.ui.MainHeadView;
 import voiddog.org.game24.util.SizeUtil;
 import voiddog.org.game24.util.UIHandler;
 
+@Fullscreen
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity{
 

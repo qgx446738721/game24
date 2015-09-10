@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -122,6 +123,7 @@ public class NumberItem extends ImageView
     public void playDisappearAndRemove(){
         //标记为-1 表示没用了
         setTag(-1);
+        setDie();
         mSpring.setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(40, 7));
         mSpring.setCurrentValue(1.0);
         mSpring.setEndValue(0.0);
@@ -160,9 +162,6 @@ public class NumberItem extends ImageView
             return;
         }
         mStatus = Status.DIE;
-        MarginItemFinishEvent event = new MarginItemFinishEvent();
-        event.currentItem = this;
-        EventBus.getDefault().post(event);
 
         invalidate();
     }
@@ -336,6 +335,11 @@ public class NumberItem extends ImageView
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return !(mStatus == Status.MARGIN || mStatus == Status.SEPARA || mStatus == Status.DIE) && super.onTouchEvent(event);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mSize, mSize);
         //设置缩放中心
@@ -361,24 +365,13 @@ public class NumberItem extends ImageView
         int height = getMeasuredHeight();
 
         mCircle.setBounds(
-                getPaddingLeft(), getPaddingTop(),
-                width - getPaddingRight(),
-                height - getPaddingBottom()
+                getPaddingLeft() + 1, getPaddingTop() + 1,
+                width - getPaddingRight() - 1,
+                height - getPaddingBottom() - 1
         );
 
         mCircle.draw(canvas);
 
-        if(mStatus == Status.PADDING
-                || mStatus == Status.MARGIN) {
-            width = getMeasuredWidth();
-            height = getMeasuredHeight();
-
-            mPaddingCircle.setBounds(0, 0, width, height);
-            mPaddingCircle.draw(canvas);
-        }
-
-        width = getMeasuredWidth();
-        height = getMeasuredHeight();
         Paint.FontMetrics fm = mTextPaint.getFontMetrics();
         float fontHeight = fm.bottom - fm.top;
         float fontWidth = mTextPaint.measureText(mStringValue);
@@ -390,7 +383,17 @@ public class NumberItem extends ImageView
     /**
      * 在image前部draw
      */
-    void drawAbove(Canvas canvas){}
+    void drawAbove(Canvas canvas){
+        if(mStatus == Status.PADDING
+                || mStatus == Status.MARGIN) {
+            int width, height;
+            width = getMeasuredWidth();
+            height = getMeasuredHeight();
+
+            mPaddingCircle.setBounds(0, 0, width, height);
+            mPaddingCircle.draw(canvas);
+        }
+    }
 
     /**
      * 初初始化
@@ -401,6 +404,7 @@ public class NumberItem extends ImageView
         mCircle.setShape(GradientDrawable.OVAL);
         mCircle.setAlpha(200);
         mPaddingCircle = new GradientDrawable();
+        mPaddingCircle.setAlpha(180);
         mPaddingCircle.setShape(GradientDrawable.OVAL);
         mPaddingCircle.setGradientType(GradientDrawable.RADIAL_GRADIENT);
         //初始化画笔
@@ -444,8 +448,8 @@ public class NumberItem extends ImageView
 
             // 1/6的概率改变速度
             if(mRandom.nextInt(6) < 1){
-                vx = mRandom.nextFloat() * MAX_RANDOM_VELOCITY;
-                vy = mRandom.nextFloat() * MAX_RANDOM_VELOCITY;
+                vx = mRandom.nextFloat() * MAX_RANDOM_VELOCITY*2.0f - MAX_RANDOM_VELOCITY;
+                vy = mRandom.nextFloat() * MAX_RANDOM_VELOCITY*2.0f - MAX_RANDOM_VELOCITY;
             }
 
             float aimX = getX() + vx;
@@ -501,7 +505,10 @@ public class NumberItem extends ImageView
 
             if(value == 1.0f){
                 if(mStatus == Status.MARGIN) {
-                    setDie();
+                    //发送合并事件
+                    MarginItemFinishEvent event = new MarginItemFinishEvent();
+                    event.currentItem = this;
+                    EventBus.getDefault().post(event);
                 }
                 else{
                     setToNormal();

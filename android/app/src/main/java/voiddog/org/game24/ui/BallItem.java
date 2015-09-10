@@ -76,9 +76,9 @@ public class BallItem extends NumberItem{
         int height = getMeasuredHeight();
 
         mCircle.setBounds(
-                getPaddingLeft(), getPaddingTop(),
-                width - getPaddingRight(),
-                height - getPaddingBottom()
+                getPaddingLeft() + 1, getPaddingTop() + 1,
+                width - getPaddingRight() - 1,
+                height - getPaddingBottom() - 1
         );
 
         mCircle.draw(canvas);

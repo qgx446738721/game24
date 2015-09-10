@@ -18,7 +18,6 @@ import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringSystem;
 
 import voiddog.org.game24.R;
-import voiddog.org.game24.util.LogUtil;
 import voiddog.org.game24.util.TypefaceHelper;
 import voiddog.org.game24.util.UIHandler;
 
@@ -138,7 +137,7 @@ public class MainHeadView extends FrameLayout implements Runnable{
             UIHandler.sendEmptyMessageDelayed(0, 1000, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
-                    playAnimation();
+                    playEnterAnimation();
                     return true;
                 }
             });
@@ -162,7 +161,7 @@ public class MainHeadView extends FrameLayout implements Runnable{
     /**
      * 播放动画
      */
-    void playAnimation(){
+    void playEnterAnimation(){
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
 
@@ -211,6 +210,13 @@ public class MainHeadView extends FrameLayout implements Runnable{
             ball[i].playAppear();
             ball[i].setSeparationPoint(endX[i], endY[i], ball[i].getColorByValue(ball[i].getValue()));
         }
+    }
+
+    /**
+     * 播放退出动画
+     */
+    void playExitAnimation(){
+
     }
 
     @Override

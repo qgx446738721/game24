@@ -287,7 +287,7 @@ public class GameFragment extends Fragment{
                     item.setToPadding();
                     if (firstNumber == null
                             || firstNumber == item
-                            || firstNumber.getStatus() == NumberItem.Status.NORMAL) {
+                            || firstNumber.getStatus() != NumberItem.Status.PADDING) {
                         firstNumber = item;
                     } else if (secondNumber == null) {
                         if (mOperation == null) {

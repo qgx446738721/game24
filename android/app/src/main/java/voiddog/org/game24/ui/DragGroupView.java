@@ -73,6 +73,25 @@ public class DragGroupView extends FrameLayout implements Runnable{
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        mViewDrag.shouldInterceptTouchEvent(ev);
+        View view = mViewDrag.findTopChildUnder((int)ev.getX(), (int)ev.getY());
+        if(view != null){
+            if(view instanceof NumberItem){
+                NumberItem item = (NumberItem) view;
+                if(item.getStatus() == NumberItem.Status.NORMAL
+                        || item.getStatus() == NumberItem.Status.PADDING){
+                    item.performClick();
+                }
+            }
+            else {
+                view.performClick();
+            }
+        }
+        return true;
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         mViewDrag.processTouchEvent(event);
         return true;
@@ -88,7 +107,9 @@ public class DragGroupView extends FrameLayout implements Runnable{
             public boolean tryCaptureView(View child, int pointerId) {
                 if(child instanceof NumberItem){
                     NumberItem item = (NumberItem) child;
-                    return item.getStatus() != NumberItem.Status.MARGIN;
+                    return item.getStatus() != NumberItem.Status.MARGIN
+                            && item.getStatus() != NumberItem.Status.SEPARA
+                            && item.getStatus() != NumberItem.Status.DIE;
                 }
                 return false;
             }

@@ -3,6 +3,25 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/clouds</item>
+        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+    </style>
+
+    <!--Activity切换动画-->
+    <style parent="@android:style/Animation.Activity" name="AnimationActivity" mce_bogus="1">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_from_bottom</item>
+        <item name="android:activityOpenExitAnimation">@anim/alpha_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/alpha_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_to_bottom</item>
+    </style>
+
+    <!--欢迎页面activity主题-->
+    <style name="MainActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/main_bg</item>
+    </style>
+    <!--游戏界面主题-->
+    <style name="GameActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/game_bg</item>
     </style>
 
 </resources>
