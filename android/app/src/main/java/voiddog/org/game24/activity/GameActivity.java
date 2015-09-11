@@ -13,9 +13,12 @@ import de.greenrobot.event.EventBus;
 import voiddog.org.game24.R;
 import voiddog.org.game24.data.GameMode;
 import voiddog.org.game24.event.GameClearEvent;
+import voiddog.org.game24.event.AskGameExitEvent;
 import voiddog.org.game24.event.GameOverEvent;
 import voiddog.org.game24.fragment.GameFragment;
 import voiddog.org.game24.fragment.GameFragment_;
+import voiddog.org.game24.fragment.dialog.CheckOrCloseDialogFragment;
+import voiddog.org.game24.fragment.dialog.CheckOrCloseDialogFragment_;
 import voiddog.org.game24.fragment.dialog.GameCongraDialogFragment;
 import voiddog.org.game24.fragment.dialog.GameCongraDialogFragment_;
 import voiddog.org.game24.fragment.dialog.GameOverDialogFragment;
@@ -35,6 +38,7 @@ public class GameActivity extends BaseActivity{
     GameFragment gameFragment;
     GameOverDialogFragment gameOverDialog;
     GameCongraDialogFragment congraDialog;
+    CheckOrCloseDialogFragment askGameExitDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class GameActivity extends BaseActivity{
         addFragment(gameFragment);
         setupGameOverDialog();
         setupGameClearDialog();
+        setupAskGameExitDialog();
     }
 
     @Override
@@ -85,6 +90,13 @@ public class GameActivity extends BaseActivity{
      */
     public void onEventMainThread(GameClearEvent event){
         congraDialog.show(getFragmentManager(), congraDialog.getClass().getName());
+    }
+
+    /**
+     * 接收到请求游戏退出
+     */
+    public void onEventMainThread(AskGameExitEvent exitEvent){
+        askGameExitDialog.show(getFragmentManager(), askGameExitDialog.getClass().getName());
     }
 
     /**
@@ -126,6 +138,21 @@ public class GameActivity extends BaseActivity{
                 // TODO 记录游戏成绩
                 finish();
             }
+        });
+    }
+
+    void setupAskGameExitDialog(){
+        askGameExitDialog = CheckOrCloseDialogFragment_.builder()
+                .content("确定退出当前游戏")
+                .build();
+        askGameExitDialog.setOnMenuCheckClickListener(new CheckOrCloseDialogFragment.OnMenuClickListener() {
+            @Override
+            public void onMenuCheckClick() {
+                finish();
+            }
+
+            @Override
+            public void onMenuCloseClick() {}
         });
     }
 

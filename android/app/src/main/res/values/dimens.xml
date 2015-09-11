@@ -43,4 +43,8 @@
     <dimen name="game_over_button_width">250dp</dimen>
 
     <dimen name="game_success_text_size">35sp</dimen>
+
+    <dimen name="system_dialog_text_size">35sp</dimen>
+    <dimen name="system_dialog_fontawesome_size">35sp</dimen>
+    
 </resources>

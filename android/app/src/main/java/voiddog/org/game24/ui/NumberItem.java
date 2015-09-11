@@ -210,8 +210,8 @@ public class NumberItem extends ImageView
         mPaddingCircle.setGradientRadius(mSize);
 
         mTextPaint.setColor(0xffffffff);
-        Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
-        mTextPaint.setTypeface(font);
+        Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
+        mTextPaint.setTypeface(typeface);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(mSize / 3);
         invalidate();

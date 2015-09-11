@@ -26,8 +26,11 @@ import voiddog.org.game24.data.GameMode;
 import voiddog.org.game24.data.OperationEnum;
 import voiddog.org.game24.data.OptionData;
 import voiddog.org.game24.event.GameClearEvent;
+import voiddog.org.game24.event.AskGameExitEvent;
 import voiddog.org.game24.event.GameOverEvent;
 import voiddog.org.game24.event.MarginItemFinishEvent;
+import voiddog.org.game24.fragment.dialog.SystemNotifyDialogFragment;
+import voiddog.org.game24.fragment.dialog.SystemNotifyDialogFragment_;
 import voiddog.org.game24.ui.DragGroupView;
 import voiddog.org.game24.ui.NumberItem;
 import voiddog.org.game24.ui.TitleBar;
@@ -75,6 +78,8 @@ public class GameFragment extends Fragment{
     int leftNumber = 4;
     //是否游戏结束
     boolean isGameOver = false;
+    //游戏提示dialog
+    SystemNotifyDialogFragment notifyDialog;
 
     @AfterViews
     void setupViews(){
@@ -128,6 +133,8 @@ public class GameFragment extends Fragment{
         EventBus.getDefault().register(this);
 
         mSeparationDis = SizeUtil.getScreenWidth(getActivity()) >> 2;
+        notifyDialog = SystemNotifyDialogFragment_.builder()
+                .build();
     }
 
     @Override
@@ -312,9 +319,6 @@ public class GameFragment extends Fragment{
 
     @Click({R.id.rcb_plus, R.id.rcb_sub, R.id.rcb_mul, R.id.rcb_div})
     void onOperationButtonClick(View view){
-        if(firstNumber == null){
-            return;
-        }
         switch (view.getId()){
             case R.id.rcb_plus:{
                 mOperation = OperationEnum.Add;
@@ -343,13 +347,15 @@ public class GameFragment extends Fragment{
 
         switch (view.getId()){
             case R.id.rcb_back:{
-                // TODO 弹出提示框
-                getActivity().finish();
+                EventBus.getDefault().post(new AskGameExitEvent());
                 break;
             }
             case R.id.rcb_no_anw:{
                 if(hasAnswer){
-                    //TODO 提示框
+                    notifyDialog.setContent("有解的哦");
+                    notifyDialog.show(
+                            getActivity().getFragmentManager(), notifyDialog.getClass().getName()
+                    );
                 }
                 else{
                     gameClear();
@@ -462,7 +468,10 @@ public class GameFragment extends Fragment{
                     } else if (secondNumber == null) {
                         if (mOperation == OperationEnum.Subtraction) {
                             if (firstNumber.getValue() < item.getValue()) {
-                                // TODO 减法不合法
+                                notifyDialog.setContent("不能减哦");
+                                notifyDialog.show(
+                                        getActivity().getFragmentManager(), notifyDialog.getClass().getName()
+                                );
                                 initState();
                                 return;
                             }
@@ -470,7 +479,10 @@ public class GameFragment extends Fragment{
                         else if(mOperation == OperationEnum.Division){
                             if(item.getValue() == 0
                                     || firstNumber.getValue() % item.getValue() != 0){
-                                // TODO 除法不合法
+                                notifyDialog.setContent("不能整除");
+                                notifyDialog.show(
+                                        getActivity().getFragmentManager(), notifyDialog.getClass().getName()
+                                );
                                 initState();
                                 return;
                             }
@@ -480,7 +492,8 @@ public class GameFragment extends Fragment{
                         firstNumber = secondNumber = null;
                         mOperation = null;
                     }
-                } else if (item.getStatus() == NumberItem.Status.PADDING) {
+                }
+                else if (item.getStatus() == NumberItem.Status.PADDING) {
                     item.setToNormal();
                     initState();
                 }
