@@ -25,6 +25,7 @@ import voiddog.org.game24.R;
 import voiddog.org.game24.data.GameMode;
 import voiddog.org.game24.data.OperationEnum;
 import voiddog.org.game24.data.OptionData;
+import voiddog.org.game24.event.GameClearEvent;
 import voiddog.org.game24.event.GameOverEvent;
 import voiddog.org.game24.event.MarginItemFinishEvent;
 import voiddog.org.game24.ui.DragGroupView;
@@ -43,7 +44,7 @@ public class GameFragment extends Fragment{
     //分离的距离，默认100，初始化为屏幕宽度的1/4
     private int mSeparationDis = 100;
     //游戏时间2分钟
-    private final int GAME_TIME = 10;
+    private final int GAME_TIME = 2*60;
 
     @ViewById
     DragGroupView game_view;
@@ -70,6 +71,10 @@ public class GameFragment extends Fragment{
     int mLeftTime = 0;
     //是否有解
     boolean hasAnswer = true;
+    //剩余球体数目
+    int leftNumber = 4;
+    //是否游戏结束
+    boolean isGameOver = false;
 
     @AfterViews
     void setupViews(){
@@ -128,6 +133,7 @@ public class GameFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mTimer.cancel();
         EventBus.getDefault().unregister(this);
     }
 
@@ -155,6 +161,10 @@ public class GameFragment extends Fragment{
      * 上一步
      */
     public void backStep(){
+        if(isGameOver){
+            return;
+        }
+
         game_view.requestLayout();
         if(mOperationStack.size() <= 0){
             return;
@@ -217,15 +227,34 @@ public class GameFragment extends Fragment{
         itemB.setColor(marginColor);
         itemA.setSeparationPoint(itemAX, itemAY, itemA.getColorByValue(itemA.getValue()));
         itemB.setSeparationPoint(itemBX, itemBY, itemB.getColorByValue(itemB.getValue()));
+
+        leftNumber++;
     }
 
     /**
-     * TODO 游戏结束
+     * 游戏结束
      */
     public void gameOver(){
+        isGameOver = true;
+
         GameOverEvent event = new GameOverEvent(
                 mGameMode,
-                "VoidDog",
+                getScore()
+        );
+        EventBus.getDefault().post(event);
+
+        game_view.stopThread();
+        mTimer.cancel();
+    }
+
+    /**
+     * 游戏成功
+     */
+    public void gameClear(){
+        isGameOver = true;
+
+        GameClearEvent event = new GameClearEvent(
+                mGameMode,
                 getScore()
         );
         EventBus.getDefault().post(event);
@@ -262,6 +291,13 @@ public class GameFragment extends Fragment{
             optionData.tagB = (int) event.currentItem.getMarginItem().getTag();
             optionData.viewTag = (int) numberItem.getTag();
             mOperationStack.push(optionData);
+
+            leftNumber--;
+
+            if(leftNumber == 1
+                    && numberItem.getValue() == 24){
+                gameClear();
+            }
         }
         event.currentItem.playDisappearAndRemove();
     }
@@ -301,6 +337,10 @@ public class GameFragment extends Fragment{
 
     @Click({R.id.rcb_back, R.id.rcb_no_anw})
     void onExtraButtonClick(View view){
+        if(isGameOver){
+            return;
+        }
+
         switch (view.getId()){
             case R.id.rcb_back:{
                 // TODO 弹出提示框
@@ -308,6 +348,12 @@ public class GameFragment extends Fragment{
                 break;
             }
             case R.id.rcb_no_anw:{
+                if(hasAnswer){
+                    //TODO 提示框
+                }
+                else{
+                    gameClear();
+                }
                 break;
             }
         }

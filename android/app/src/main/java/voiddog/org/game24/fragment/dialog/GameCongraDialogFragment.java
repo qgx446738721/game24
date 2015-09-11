@@ -26,6 +26,13 @@ public class GameCongraDialogFragment extends BaseDialogFragment{
     //按钮点击事件
     OnMenuClick menuClick;
 
+    /**
+     * 设置按钮点击事件
+     */
+    public void setOnMenuClickListener(OnMenuClick clickListener){
+        this.menuClick = clickListener;
+    }
+
     @Override
     public void onStart() {
         //全屏显示
@@ -40,7 +47,7 @@ public class GameCongraDialogFragment extends BaseDialogFragment{
     @AfterViews
     void setupViews(){
         setCancelable(false);
-        tv_title.setTypeface(TypefaceHelper.getInstance().loadTypeface("Rounded.ttf"));
+        tv_title.setTypeface(TypefaceHelper.getInstance().loadTypeface("fonts/Rounded.ttf"));
     }
 
     @Click({R.id.rcb_once_more, R.id.rcb_back_to_home})

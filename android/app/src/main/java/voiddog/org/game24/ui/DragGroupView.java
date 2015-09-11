@@ -168,6 +168,16 @@ public class DragGroupView extends FrameLayout implements Runnable{
         });
     }
 
+    public int getBallItem(){
+        int res = 0;
+        for(int i = getChildCount() - 1; i >=0 ; i--){
+            if(getChildAt(i) instanceof NumberItem){
+                res++;
+            }
+        }
+        return res;
+    }
+
     @Override
     public void run() {
         while(mIsThreadRunning){
