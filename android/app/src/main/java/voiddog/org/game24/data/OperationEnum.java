@@ -7,5 +7,6 @@ package voiddog.org.game24.data;
 public enum OperationEnum {
     Add,
     Subtraction,
-    Multiplication
+    Multiplication,
+    Division
 }

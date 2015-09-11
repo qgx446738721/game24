@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<voiddog.org.game24.ui.VerticalMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textColor="@color/white"
+        android:textSize="@dimen/game_success_text_size"
+        android:text="Congratulations"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <voiddog.org.game24.ui.RoundCornerButton
+        android:id="@+id/rcb_once_more"
+        app:round_btn_bg="@color/danger"
+        android:textColor="@color/white"
+        android:text="@string/next_level"
+        android:textSize="@dimen/default_text_size_big"
+        android:layout_marginTop="@dimen/default_dis_size"
+        app:round_btn_radio_size="@dimen/default_radius"
+        app:round_btn_active_bg="@color/white"
+        android:layout_width="@dimen/game_over_width"
+        android:layout_height="wrap_content" />
+
+    <voiddog.org.game24.ui.RoundCornerButton
+        android:id="@+id/rcb_back_to_home"
+        app:round_btn_bg="@color/transparent"
+        android:textColor="@color/danger"
+        android:text="@string/back_to_home"
+        app:round_stroke_width="2dp"
+        app:round_stroke_color="@color/danger"
+        android:textSize="@dimen/default_text_size_big"
+        android:layout_marginTop="@dimen/default_dis_size"
+        app:round_btn_radio_size="@dimen/default_radius"
+        app:round_btn_active_bg="@color/danger"
+        android:layout_width="@dimen/game_over_width"
+        android:layout_height="wrap_content" />
+
+</voiddog.org.game24.ui.VerticalMenuLayout>

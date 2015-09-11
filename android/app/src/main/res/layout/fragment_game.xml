@@ -1,12 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <voiddog.org.game24.ui.TitleBar_
+        android:id="@+id/title_bar"
+        app:titleBg="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_height"/>
+
     <voiddog.org.game24.ui.DragGroupView
+        android:layout_below="@id/title_bar"
         android:id="@+id/game_view"
+        android:layout_above="@+id/lin_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/lin_bottom"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:paddingLeft="@dimen/default_dis_size_small"
+        android:paddingRight="@dimen/default_dis_size_small"
+        android:paddingTop="@dimen/default_dis_size_small"
+        android:paddingBottom="@dimen/default_dis_size_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_plus"
+                app:round_btn_bg="@color/yellow"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="+"
+                android:layout_gravity="right"
+                android:textSize="@dimen/default_text_size_huge_more"
+                android:layout_marginLeft="@dimen/default_dis_size"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_back"
+                app:round_btn_bg="@color/danger"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="@string/back"
+                android:textSize="@dimen/default_text_size_big"
+                android:layout_marginLeft="@dimen/default_dis_size_micro"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_sub"
+                app:round_btn_bg="@color/yellow"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="-"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/default_text_size_huge_more"
+                android:layout_marginLeft="@dimen/default_dis_size"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_mul"
+                app:round_btn_bg="@color/yellow"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="×"
+                android:layout_centerInParent="true"
+                android:textSize="@dimen/default_text_size_huge_more"
+                android:layout_marginLeft="@dimen/default_dis_size"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_div"
+                app:round_btn_bg="@color/yellow"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="÷"
+                android:layout_gravity="left"
+                android:textSize="@dimen/default_text_size_huge_more"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+            <voiddog.org.game24.ui.RoundCornerButton
+                android:id="@+id/rcb_no_anw"
+                app:round_btn_bg="@color/danger"
+                app:round_stroke_width="2dp"
+                app:round_stroke_color="@color/white"
+                android:textColor="@color/white"
+                android:text="@string/no_answer"
+                android:layout_gravity="right"
+                android:textSize="@dimen/default_text_size_big"
+                android:layout_marginRight="@dimen/default_dis_size_micro"
+                app:round_btn_radio_size="@dimen/game_button_size"
+                android:layout_width="@dimen/game_button_size"
+                android:layout_height="@dimen/game_button_size" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

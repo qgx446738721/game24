@@ -6,24 +6,31 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 import voiddog.org.game24.R;
+import voiddog.org.game24.data.GameMode;
 import voiddog.org.game24.data.OperationEnum;
 import voiddog.org.game24.data.OptionData;
+import voiddog.org.game24.event.GameOverEvent;
 import voiddog.org.game24.event.MarginItemFinishEvent;
 import voiddog.org.game24.ui.DragGroupView;
 import voiddog.org.game24.ui.NumberItem;
+import voiddog.org.game24.ui.TitleBar;
+import voiddog.org.game24.util.CalculateAnswerHelper;
 import voiddog.org.game24.util.SizeUtil;
 import voiddog.org.game24.util.UIHandler;
 
@@ -35,20 +42,34 @@ import voiddog.org.game24.util.UIHandler;
 public class GameFragment extends Fragment{
     //分离的距离，默认100，初始化为屏幕宽度的1/4
     private int mSeparationDis = 100;
+    //游戏时间2分钟
+    private final int GAME_TIME = 10;
 
     @ViewById
     DragGroupView game_view;
+    @ViewById
+    Button rcb_back, rcb_plus, rcb_sub, rcb_mul, rcb_div, rcb_no_anw;
+    @ViewById
+    TitleBar title_bar;
+    @FragmentArg
+    GameMode mGameMode = GameMode.Nervous;
+    @FragmentArg
+    int roundId = 1;
 
     //操作保存栈，供撤销用
     Stack<OptionData> mOperationStack = new Stack<>();
-    //Number Item 列表
-    final List<NumberItem> mNumberItemList = new ArrayList<>();
     //两个操作数
     NumberItem firstNumber, secondNumber;
     //操作
-    OperationEnum mOperation = OperationEnum.Add;
+    OperationEnum mOperation = null;
     //view tag
     int viewTag = 1;
+    //计时器
+    Timer mTimer;
+    //剩余时间
+    int mLeftTime = 0;
+    //是否有解
+    boolean hasAnswer = true;
 
     @AfterViews
     void setupViews(){
@@ -60,6 +81,40 @@ public class GameFragment extends Fragment{
                 return true;
             }
         });
+        //设置头部
+        setupTitle();
+    }
+
+    /**
+     * 设置模式 简单模式（没有倒计时）, 休闲模式(有倒计时)
+     */
+    void setupTitle(){
+        title_bar.setTitle(String.format("第%d局", roundId));
+        if(mGameMode == GameMode.Nervous) {
+            mTimer = new Timer(true);
+            mLeftTime = GAME_TIME;
+            title_bar.setRightText(String.format("剩余时间:%d秒", mLeftTime));
+            mTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mLeftTime--;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            title_bar.setRightText(String.format("剩余时间:%d秒", mLeftTime));
+                        }
+                    });
+                    if (mLeftTime == 0) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                gameOver();
+                            }
+                        });
+                    }
+                }
+            }, 2000, 1000);
+        }
     }
 
     @Override
@@ -86,6 +141,14 @@ public class GameFragment extends Fragment{
     public void onStop() {
         super.onStop();
         game_view.stopThread();
+    }
+
+    /**
+     * 获取游戏关数
+     * @return 游戏关数
+     */
+    public int getGameRound(){
+        return roundId;
     }
 
     /**
@@ -131,22 +194,14 @@ public class GameFragment extends Fragment{
             numberItem.playDisappearAndRemove();
         }
 
-        synchronized (mNumberItemList){
-            mNumberItemList.add(itemA);
-            mNumberItemList.add(itemB);
-            if(numberItem != null) {
-                mNumberItemList.remove(numberItem);
-            }
-        }
-
         //开始分离操作
         Random random = new Random();
         float itemAX, itemBX, itemAY, itemBY;
         float value = mSeparationDis*(random.nextFloat() + 0.5f);
         itemAX = marginX - value;
         itemBX = marginX + value;
-        itemAX = Math.max(0, Math.min(SizeUtil.getScreenWidth(getActivity()) - itemA.getSize(), itemAX));
-        itemBX = Math.max(0, Math.min(SizeUtil.getScreenWidth(getActivity()) - itemB.getSize(), itemBX));
+        itemAX = Math.max(0, Math.min(game_view.getMeasuredWidth() - itemA.getSize(), itemAX));
+        itemBX = Math.max(0, Math.min(game_view.getMeasuredWidth() - itemB.getSize(), itemBX));
 
         value = mSeparationDis*(random.nextFloat() + 0.5f);
         if(random.nextInt(2) > 0){
@@ -154,14 +209,29 @@ public class GameFragment extends Fragment{
         }
         itemAY = marginY - value;
         itemBY = marginY + value;
-        itemAY = Math.max(0, Math.min(SizeUtil.getScreenHeight(getActivity()) - itemA.getSize(), itemAY));
-        itemBY = Math.max(0, Math.min(SizeUtil.getScreenHeight(getActivity()) - itemB.getSize(), itemBY));
+        itemAY = Math.max(0, Math.min(game_view.getMeasuredHeight() - itemA.getSize(), itemAY));
+        itemBY = Math.max(0, Math.min(game_view.getMeasuredHeight() - itemB.getSize(), itemBY));
 
         int marginColor = itemA.getColorByValue(data.marginValue);
         itemA.setColor(marginColor);
         itemB.setColor(marginColor);
         itemA.setSeparationPoint(itemAX, itemAY, itemA.getColorByValue(itemA.getValue()));
         itemB.setSeparationPoint(itemBX, itemBY, itemB.getColorByValue(itemB.getValue()));
+    }
+
+    /**
+     * TODO 游戏结束
+     */
+    public void gameOver(){
+        GameOverEvent event = new GameOverEvent(
+                mGameMode,
+                "VoidDog",
+                getScore()
+        );
+        EventBus.getDefault().post(event);
+
+        game_view.stopThread();
+        mTimer.cancel();
     }
 
     /**
@@ -184,9 +254,6 @@ public class GameFragment extends Fragment{
             numberItem.setX(event.currentItem.getX() + event.currentItem.getSize() / 2.0f - numberItem.getSize() / 2.0f);
             numberItem.setY(event.currentItem.getY() + event.currentItem.getSize() / 2.0f - numberItem.getSize() / 2.0f);
             numberItem.playAppear();
-            synchronized (mNumberItemList){
-                mNumberItemList.add(numberItem);
-            }
 
             OptionData optionData = new OptionData();
             optionData.valueA = event.currentItem.getValue();
@@ -196,10 +263,54 @@ public class GameFragment extends Fragment{
             optionData.viewTag = (int) numberItem.getTag();
             mOperationStack.push(optionData);
         }
-        synchronized (mNumberItemList){
-            mNumberItemList.remove(event.currentItem);
-        }
         event.currentItem.playDisappearAndRemove();
+    }
+
+    /**
+     * 获取当前局的分数
+     * @return 分数
+     */
+    int getScore(){
+        return roundId;
+    }
+
+    @Click({R.id.rcb_plus, R.id.rcb_sub, R.id.rcb_mul, R.id.rcb_div})
+    void onOperationButtonClick(View view){
+        if(firstNumber == null){
+            return;
+        }
+        switch (view.getId()){
+            case R.id.rcb_plus:{
+                mOperation = OperationEnum.Add;
+                break;
+            }
+            case R.id.rcb_sub:{
+                mOperation = OperationEnum.Subtraction;
+                break;
+            }
+            case R.id.rcb_mul:{
+                mOperation = OperationEnum.Multiplication;
+                break;
+            }
+            case R.id.rcb_div:{
+                mOperation = OperationEnum.Division;
+                break;
+            }
+        }
+    }
+
+    @Click({R.id.rcb_back, R.id.rcb_no_anw})
+    void onExtraButtonClick(View view){
+        switch (view.getId()){
+            case R.id.rcb_back:{
+                // TODO 弹出提示框
+                getActivity().finish();
+                break;
+            }
+            case R.id.rcb_no_anw:{
+                break;
+            }
+        }
     }
 
     int calculateValue(int valueA, int valueB, OperationEnum operation){
@@ -217,6 +328,10 @@ public class GameFragment extends Fragment{
                 res = valueA - valueB;
                 break;
             }
+            case Division:{
+                res = valueA / valueB;
+                break;
+            }
         }
         return res;
     }
@@ -229,37 +344,39 @@ public class GameFragment extends Fragment{
         int height = SizeUtil.getScreenHeight(getActivity());
         int width = SizeUtil.getScreenWidth(getActivity());
 
-        synchronized (mNumberItemList) {
-            for (int i = 0; i < 4; i++) {
-                NumberItem item = createItem();
-                game_view.addView(
-                        item,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-                mNumberItemList.add(item);
-                int x, y;
-                if (i < 2) {
-                    y = random.nextInt(height >> 2);
-                } else {
-                    y = random.nextInt(height >> 2) + (height >> 2);
-                }
-                if (i % 2 == 0) {
-                    x = random.nextInt(width >> 1);
-                } else {
-                    x = random.nextInt(width >> 1) + (width >> 1);
-                }
-                if (x > width - (item.getSize() << 1)) {
-                    x = width - (item.getSize() << 1);
-                }
-                if (y > height - (item.getSize() << 1)) {
-                    y = height - (item.getSize() << 1);
-                }
-                item.setX(x);
-                item.setY(y);
-                item.playAppear();
+        int[] cards = new int[4];
+
+        for (int i = 0; i < 4; i++) {
+            NumberItem item = createItem();
+            cards[i] = item.getValue();
+            game_view.addView(
+                    item,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            int x, y;
+            if (i < 2) {
+                y = random.nextInt(height >> 2);
+            } else {
+                y = random.nextInt(height >> 2) + (height >> 2);
             }
+            if (i % 2 == 0) {
+                x = random.nextInt(width >> 1);
+            } else {
+                x = random.nextInt(width >> 1) + (width >> 1);
+            }
+            if (x > width - (item.getSize() << 1)) {
+                x = width - (item.getSize() << 1);
+            }
+            if (y > height - (item.getSize() << 1)) {
+                y = height - (item.getSize() << 1);
+            }
+            item.setX(x);
+            item.setY(y);
+            item.playAppear();
         }
+
+        hasAnswer = CalculateAnswerHelper.judgeAnswer(cards);
     }
 
     /**
@@ -287,25 +404,35 @@ public class GameFragment extends Fragment{
                     item.setToPadding();
                     if (firstNumber == null
                             || firstNumber == item
+                            || mOperation == null
                             || firstNumber.getStatus() != NumberItem.Status.PADDING) {
+
+                        if(firstNumber != item
+                                && firstNumber != null){
+                            firstNumber.setToNormal();
+                        }
+
                         firstNumber = item;
                     } else if (secondNumber == null) {
-                        if (mOperation == null) {
-                            initState();
-                        } else {
-                            //特殊处理减法
-                            if (mOperation == OperationEnum.Subtraction) {
-                                if (firstNumber.getValue() < item.getValue()) {
-                                    // TODO 减法不合法
-                                    initState();
-                                    return;
-                                }
+                        if (mOperation == OperationEnum.Subtraction) {
+                            if (firstNumber.getValue() < item.getValue()) {
+                                // TODO 减法不合法
+                                initState();
+                                return;
                             }
-                            secondNumber = item;
-                            marginItem(firstNumber, secondNumber, mOperation);
-                            firstNumber = secondNumber = null;
-                            // TODO mOperation = null;
                         }
+                        else if(mOperation == OperationEnum.Division){
+                            if(item.getValue() == 0
+                                    || firstNumber.getValue() % item.getValue() != 0){
+                                // TODO 除法不合法
+                                initState();
+                                return;
+                            }
+                        }
+                        secondNumber = item;
+                        marginItem(firstNumber, secondNumber, mOperation);
+                        firstNumber = secondNumber = null;
+                        mOperation = null;
                     }
                 } else if (item.getStatus() == NumberItem.Status.PADDING) {
                     item.setToNormal();
@@ -329,7 +456,7 @@ public class GameFragment extends Fragment{
             secondNumber.setToNormal();
             secondNumber = null;
         }
-        // TODO mOperation = null;
+        mOperation = null;
     }
 
     /**

@@ -2,24 +2,11 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout
         android:id="@+id/fra_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <voiddog.org.game24.ui.RoundCornerButton
-        android:id="@+id/rcb_back"
-        android:layout_margin="@dimen/default_dis_size"
-        app:round_btn_bg="@color/danger"
-        app:round_btn_radio_size="@dimen/default_radius"
-        android:layout_alignParentBottom="true"
-        android:text="Back"
-        android:textColor="@color/white"
-        android:textSize="@dimen/default_text_size_big"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </RelativeLayout>

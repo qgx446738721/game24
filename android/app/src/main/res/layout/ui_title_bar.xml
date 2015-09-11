@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:id="@+id/lin_btn_left"
+        android:layout_gravity="left"
+        android:paddingLeft="@dimen/title_padding_icon_start"
+        android:paddingRight="@dimen/title_padding_icon_start"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <com.beardedhen.androidbootstrap.FontAwesomeText
+            android:visibility="gone"
+            android:id="@+id/fat_left_icon"
+            android:textSize="@dimen/title_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_left_text"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/title_size"
+        android:gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/lin_btn_right"
+        android:layout_gravity="right"
+        android:paddingRight="@dimen/title_padding_icon_start"
+        android:paddingLeft="@dimen/title_padding_icon_start"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tv_right_text"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent" />
+
+        <com.beardedhen.androidbootstrap.FontAwesomeText
+            android:visibility="gone"
+            android:id="@+id/fat_right_icon"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/title_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</merge>

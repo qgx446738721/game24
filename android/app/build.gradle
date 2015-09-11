@@ -34,6 +34,7 @@ dependencies {
     compile 'com.facebook.rebound:rebound:0.3.8'
     compile 'com.facebook.fresco:fresco:0.7.0'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.beardedhen:androidbootstrap:1.2.1'
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
 }

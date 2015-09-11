@@ -2,4 +2,11 @@
     <string name="app_name">Game24</string>
     <string name="begin_game">开始游戏</string>
     <string name="rank">排行榜</string>
+    <string name="revoke">撤销</string>
+    <string name="back">退出</string>
+    <string name="no_answer">无解</string>
+    <string name="game_over">GAME\nOVER</string>
+    <string name="once_more">再来一次</string>
+    <string name="back_to_home">返回主页</string>
+    <string name="next_level">下一局</string>
 </resources>

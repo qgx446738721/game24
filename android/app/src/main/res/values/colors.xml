@@ -19,4 +19,7 @@
     <color name="blue">#FF375BF1</color>
     <color name="tianyi_blue">#66ccff</color>
     <color name="no_picture_color">#dedede</color>
+
+    <color name="default_text_color">#555</color>
+    <color name="dialog_white_bg">#eeffffff</color>
 </resources>

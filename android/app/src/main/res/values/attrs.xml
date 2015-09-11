@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--头部Bar的参数-->
+    <declare-styleable name="TitleBar">
+        <attr name="titleBg" format="color"/>
+        <attr name="leftColor" format="color"/>
+        <attr name="leftIcon" format="string"/>
+        <attr name="leftText" format="string"/>
+        <attr name="rightColor" format="color"/>
+        <attr name="rightIcon" format="string"/>
+        <attr name="rightText" format="string"/>
+        <attr name="titleColor" format="color"/>
+        <attr name="titleText" format="string"/>
+    </declare-styleable>
     <!--圆角按钮-->
     <declare-styleable name="RoundCornerButton">
         <attr name="round_stroke_width" format="dimension"/>
@@ -9,5 +21,15 @@
         <attr name="round_btn_disable_bg" format="color"/>
         <attr name="round_btn_disable_text_color" format="color"/>
         <attr name="round_btn_radio_size" format="dimension"/>
+    </declare-styleable>
+    <!--弹性布局view-->
+    <declare-styleable name="VerticalMenuLayout">
+        <attr name="menu_gravity" format="enum">
+            <enum name="center" value="0"/>
+            <enum name="top" value="1"/>
+            <enum name="bottom" value="2"/>
+            <enum name="left" value="4"/>
+            <enum name="right" value="8"/>
+        </attr>
     </declare-styleable>
 </resources>
