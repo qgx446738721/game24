@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRanksTable extends Migration
+class CreateRelaxRanks extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,11 @@ class CreateRanksTable extends Migration
      */
     public function up()
     {
-        Schema::create('ranks', function (Blueprint $table) {
+        Schema::create('relax_ranks', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('uid')->unique();
             $table->string('name');
-            $table->string('mark');
+            $table->integer('mark');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateRanksTable extends Migration
      */
     public function down()
     {
-        Schema::drop('ranks');
+        Schema::drop('relax_ranks');
     }
 }

@@ -14,3 +14,15 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('get_csrf_token', function(){
+    return ['code'=>'0', 'msg'=>'success', 'data'=>csrf_token()];
+});
+
+Route::post('relax_rank_list', 'GameRankController@getRelaxRankList');
+
+Route::post('register', 'UserController@registerNewUser');
+
+Route::post('upload_relax_mark', 'GameRankController@saveMarkToRelaxRankList');
+
+Route::post('upload_nervous_mark', 'GameRankController@saveMarkToNervousRankList');

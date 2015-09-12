@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/GameRankController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/Controllers/UserController.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/Http/routes.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/NervousRank.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/RelaxRank.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/User.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/database/migrations/2015_09_12_023917_create_relax_ranks.php" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/database/migrations/2015_09_12_024049_create_nervous_ranks.php" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>

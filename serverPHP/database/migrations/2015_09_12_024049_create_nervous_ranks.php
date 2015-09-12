@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateNervousRanks extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,11 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('nervous_ranks', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->unique();
+            $table->integer('uid')->unique();
+            $table->string('name');
+            $table->integer('mark');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::drop('nervous_ranks');
     }
 }
