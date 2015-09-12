@@ -13,5 +13,5 @@ public interface Config {
     //用户姓名
     String userName();
     //用户id
-    String userId();
+    int userId();
 }

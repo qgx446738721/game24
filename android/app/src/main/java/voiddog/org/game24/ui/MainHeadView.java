@@ -3,6 +3,7 @@ package voiddog.org.game24.ui;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -148,6 +149,9 @@ public class MainHeadView extends FrameLayout implements Runnable{
 
         title.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.main_title_text_size));
         title.setTextColor(Color.WHITE);
+        if(TypefaceHelper.getInstance() == null){
+            TypefaceHelper.init(getContext());
+        }
         title.setTypeface(TypefaceHelper.getInstance().loadTypeface("fonts/plurp.ttf"));
         title.setText("24");
 

@@ -23,6 +23,12 @@ import voiddog.org.game24.fragment.dialog.GameCongraDialogFragment;
 import voiddog.org.game24.fragment.dialog.GameCongraDialogFragment_;
 import voiddog.org.game24.fragment.dialog.GameOverDialogFragment;
 import voiddog.org.game24.fragment.dialog.GameOverDialogFragment_;
+import voiddog.org.game24.net.HttpClientManager;
+import voiddog.org.game24.net.request.BaseCmd;
+import voiddog.org.game24.net.request.UploadNervousScoreCmd;
+import voiddog.org.game24.net.request.UploadRelaxModeScoreCmd;
+import voiddog.org.game24.util.LogUtil;
+import voiddog.org.game24.util.UserHelper;
 
 /**
  * 游戏activity
@@ -39,6 +45,8 @@ public class GameActivity extends BaseActivity{
     GameOverDialogFragment gameOverDialog;
     GameCongraDialogFragment congraDialog;
     CheckOrCloseDialogFragment askGameExitDialog;
+    //我的分数
+    int myScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +90,14 @@ public class GameActivity extends BaseActivity{
      * 接收到游戏结束事件
      */
     public void onEventMainThread(GameOverEvent event){
+        myScore += event.score;
         if(congraDialog.isAdded()) {
             congraDialog.dismiss();
         }
         if(askGameExitDialog.isAdded()) {
             askGameExitDialog.dismiss();
         }
+        gameOverDialog.setAnswer(event.anw);
         gameOverDialog.show(getFragmentManager(), gameFragment.getClass().getName());
     }
 
@@ -95,6 +105,7 @@ public class GameActivity extends BaseActivity{
      * 接收到游戏解出
      */
     public void onEventMainThread(GameClearEvent event){
+        myScore += event.score;
         congraDialog.show(getFragmentManager(), congraDialog.getClass().getName());
     }
 
@@ -114,13 +125,13 @@ public class GameActivity extends BaseActivity{
         gameOverDialog.setOnMenuClickListener(new GameOverDialogFragment.OnMenuClick() {
             @Override
             public void onRestartClick() {
-                //TODO 记录游戏成绩
+                uploadScore();
                 restartGame();
             }
 
             @Override
             public void onBackToHomeClick() {
-                // TODO 记录游戏成绩
+                uploadScore();
                 finish();
             }
         });
@@ -135,13 +146,12 @@ public class GameActivity extends BaseActivity{
         congraDialog.setOnMenuClickListener(new GameCongraDialogFragment.OnMenuClick() {
             @Override
             public void onNextLevelClick() {
-                // TODO 记录游戏成绩
                 nextLevel();
             }
 
             @Override
             public void onBackToHomeClick() {
-                // TODO 记录游戏成绩
+                uploadScore();
                 finish();
             }
         });
@@ -154,6 +164,7 @@ public class GameActivity extends BaseActivity{
         askGameExitDialog.setOnMenuCheckClickListener(new CheckOrCloseDialogFragment.OnMenuClickListener() {
             @Override
             public void onMenuCheckClick() {
+                uploadScore();
                 finish();
             }
 
@@ -163,9 +174,42 @@ public class GameActivity extends BaseActivity{
     }
 
     /**
+     * 提交成绩
+     */
+    void uploadScore(){
+        if(UserHelper.getInstance().isHasUser()) {
+            BaseCmd cmd;
+            if(mGameMode == GameMode.Relax) {
+                cmd = new UploadRelaxModeScoreCmd(
+                        UserHelper.getInstance().getUid(),
+                        myScore
+                );
+            }
+            else {
+                cmd = new UploadNervousScoreCmd(
+                        UserHelper.getInstance().getUid(),
+                        myScore
+                );
+            }
+            HttpClientManager.getInstance().post(cmd, new HttpClientManager.HttpCallback() {
+                @Override
+                public void onSuccess(String msg, String data) {
+                    LogUtil.I("upload score success");
+                }
+
+                @Override
+                public void onFailure(int code, String msg, String data) {
+                    LogUtil.E(msg);
+                }
+            });
+        }
+    }
+
+    /**
      * 重新开始游戏
      */
     void restartGame(){
+        myScore = 0;
         GameFragment gameFragment = GameFragment_.builder()
                 .roundId(1)
                 .mGameMode(mGameMode)

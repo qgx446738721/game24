@@ -24,6 +24,7 @@ import java.util.Random;
 import de.greenrobot.event.EventBus;
 import voiddog.org.game24.data.OperationEnum;
 import voiddog.org.game24.event.MarginItemFinishEvent;
+import voiddog.org.game24.util.TypefaceHelper;
 
 /**
  * 数字item
@@ -213,7 +214,7 @@ public class NumberItem extends ImageView
         Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
         mTextPaint.setTypeface(typeface);
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextSize(mSize / 3);
+        mTextPaint.setTextSize(mSize >> 2);
         invalidate();
     }
 
@@ -409,6 +410,7 @@ public class NumberItem extends ImageView
         mPaddingCircle.setGradientType(GradientDrawable.RADIAL_GRADIENT);
         //初始化画笔
         mTextPaint = new Paint();
+        mTextPaint.setTypeface(TypefaceHelper.getInstance().loadTypeface("fonts/jianzhi.TTF"));
 
         mMovingAnimator.setDuration(MARGIN_ANIM_TIME);
         mMovingAnimator.setFloatValues(0.0f, 1.0f);

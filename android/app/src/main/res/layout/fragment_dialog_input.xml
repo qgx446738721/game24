@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<voiddog.org.game24.ui.VerticalMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:menu_gravity="top"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/default_dis_size_huge_more"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/game_over_text_size"
+        android:text="@string/input_name"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/et_input_name"
+        android:minWidth="200dp"
+        android:padding="5dp"
+        android:maxLength="10"
+        android:layout_marginTop="@dimen/default_dis_size"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/input_frame"
+        android:textColor="@color/white"
+        android:textCursorDrawable="@drawable/input_text_cursor"
+        android:textSize="@dimen/input_name_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/default_dis_size_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/circle_progress"
+            app:matProg_barWidth="5dp"
+            app:matProg_barColor="@color/white"
+            app:matProg_progressIndeterminate="true"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_width="@dimen/input_progress_size"
+            android:layout_height="@dimen/input_progress_size"/>
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textSize="@dimen/default_text_size_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/default_dis_size_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.beardedhen.androidbootstrap.FontAwesomeText
+            android:id="@+id/fat_close"
+            app:fa_icon="fa-close"
+            android:textColor="@color/danger"
+            android:layout_marginRight="@dimen/default_dis_size_big"
+            android:textSize="@dimen/system_dialog_fontawesome_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.beardedhen.androidbootstrap.FontAwesomeText
+            android:id="@+id/fat_check"
+            app:fa_icon="fa-check-circle-o"
+            android:textColor="@color/green"
+            android:layout_marginLeft="@dimen/default_dis_size_big"
+            android:textSize="@dimen/system_dialog_fontawesome_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</voiddog.org.game24.ui.VerticalMenuLayout>

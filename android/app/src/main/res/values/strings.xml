@@ -9,4 +9,5 @@
     <string name="once_more">再来一次</string>
     <string name="back_to_home">返回主页</string>
     <string name="next_level">下一局</string>
+    <string name="input_name">新建用户名</string>
 </resources>

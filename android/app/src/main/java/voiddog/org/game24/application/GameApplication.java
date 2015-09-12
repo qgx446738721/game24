@@ -5,6 +5,7 @@ import android.app.Application;
 import voiddog.org.game24.net.HttpClientManager;
 import voiddog.org.game24.util.LogUtil;
 import voiddog.org.game24.util.TypefaceHelper;
+import voiddog.org.game24.util.UserHelper;
 
 /**
  * 应用app实例
@@ -30,5 +31,7 @@ public class GameApplication extends Application{
         TypefaceHelper.init(getApplicationContext());
         //网络管理类
         HttpClientManager.init(getApplicationContext());
+        //用户帮助类
+        UserHelper.init(getApplicationContext());
     }
 }

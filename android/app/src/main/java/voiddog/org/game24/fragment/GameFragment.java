@@ -35,6 +35,7 @@ import voiddog.org.game24.ui.GameButton;
 import voiddog.org.game24.ui.NumberItem;
 import voiddog.org.game24.ui.TitleBar;
 import voiddog.org.game24.util.CalculateAnswerHelper;
+import voiddog.org.game24.util.LogUtil;
 import voiddog.org.game24.util.SizeUtil;
 import voiddog.org.game24.util.UIHandler;
 
@@ -72,7 +73,7 @@ public class GameFragment extends Fragment{
     //剩余时间
     int mLeftTime = 0;
     //是否有解
-    boolean hasAnswer = true;
+    String hasAnswer = null;
     //剩余球体数目
     int leftNumber = 4;
     //是否游戏结束
@@ -153,7 +154,12 @@ public class GameFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        game_view.startThread();
+        if(!isGameOver) {
+            game_view.startThread();
+        }
+        else{
+            gameOver();
+        }
     }
 
     @Override
@@ -248,22 +254,31 @@ public class GameFragment extends Fragment{
      * 游戏结束
      */
     public void gameOver(){
+        if(isGameOver){
+            return;
+        }
         isGameOver = true;
-
-        GameOverEvent event = new GameOverEvent(
-                mGameMode,
-                getScore()
-        );
-        EventBus.getDefault().post(event);
 
         game_view.stopThread();
         mTimer.cancel();
+
+        if(isResumed()){
+            GameOverEvent event = new GameOverEvent(
+                    mGameMode,
+                    getScore(),
+                    hasAnswer
+            );
+            EventBus.getDefault().post(event);
+        }
     }
 
     /**
      * 游戏成功
      */
     public void gameClear(){
+        if(isGameOver){
+            return;
+        }
         isGameOver = true;
 
         GameClearEvent event = new GameClearEvent(
@@ -320,7 +335,7 @@ public class GameFragment extends Fragment{
      * @return 分数
      */
     int getScore(){
-        return roundId;
+        return roundId*120+mLeftTime;
     }
 
     @Click({R.id.gb_plus, R.id.gb_sub, R.id.gb_mul, R.id.gb_div})
@@ -363,7 +378,7 @@ public class GameFragment extends Fragment{
             return;
         }
 
-        if(hasAnswer){
+        if(hasAnswer!=null){
             notifyDialog.setContent("有解的哦");
             notifyDialog.show(
                     getActivity().getFragmentManager(), notifyDialog.getClass().getName()
@@ -438,6 +453,7 @@ public class GameFragment extends Fragment{
         }
 
         hasAnswer = CalculateAnswerHelper.judgeAnswer(cards);
+        LogUtil.I(hasAnswer == null ? "null" : hasAnswer);
     }
 
     /**

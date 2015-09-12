@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
@@ -22,10 +23,15 @@ import org.androidannotations.annotations.Fullscreen;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.AnimationRes;
 
+import de.greenrobot.event.EventBus;
 import voiddog.org.game24.R;
+import voiddog.org.game24.event.UserInfoUpdateEvent;
+import voiddog.org.game24.fragment.dialog.InputDialogFragment;
+import voiddog.org.game24.fragment.dialog.InputDialogFragment_;
 import voiddog.org.game24.ui.MainHeadView;
 import voiddog.org.game24.util.SizeUtil;
 import voiddog.org.game24.util.UIHandler;
+import voiddog.org.game24.util.UserHelper;
 
 @Fullscreen
 @EActivity(R.layout.activity_main)
@@ -37,10 +43,13 @@ public class MainActivity extends BaseActivity{
     MainHeadView main_head;
     @ViewById
     Button rcb_start;
+    @ViewById
+    TextView tv_user_name;
 
     //按钮移动动画
     Spring mMovingSpring;
     MenuMovingController menuMovingController = new MenuMovingController();
+    InputDialogFragment inputDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,16 @@ public class MainActivity extends BaseActivity{
         mMovingSpring = springSystem.createSpring();
         mMovingSpring.setSpringConfig(SpringConfig.fromOrigamiTensionAndFriction(25, 6));
         mMovingSpring.addListener(menuMovingController);
+
+        inputDialog = InputDialogFragment_.builder().build();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -66,6 +85,9 @@ public class MainActivity extends BaseActivity{
 
     @AfterViews
     void setupViews(){
+        if(!UserHelper.getInstance().isHasUser()){
+            inputDialog.show(getFragmentManager(), inputDialog.getClass().getName());
+        }
 
         //300ms后调用
         lin_menu.setVisibility(View.INVISIBLE);
@@ -82,6 +104,22 @@ public class MainActivity extends BaseActivity{
                 });
             }
         });
+
+        onEventMainThread(new UserInfoUpdateEvent());
+    }
+
+    public void onEventMainThread(UserInfoUpdateEvent event){
+        if(UserHelper.getInstance().isHasUser()) {
+            tv_user_name.setText(UserHelper.getInstance().getName());
+        }
+        else{
+            tv_user_name.setText("未设置");
+        }
+    }
+
+    @Click(R.id.lin_user_info)
+    void onUserNameClick(){
+        inputDialog.show(getFragmentManager(), inputDialog.getClass().getName());
     }
 
     /**

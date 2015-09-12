@@ -50,7 +50,7 @@ public class HttpClientManager {
      * 更新token
      */
     public void updateToken(){
-        Config_ config = new Config_(mContext);
+        final Config_ config = new Config_(mContext);
         _token = config.csrfToken().get();
         mClient.get(Constance.API_HOST + "get_csrf_token", new AsyncHttpResponseHandler() {
             @Override
@@ -64,6 +64,7 @@ public class HttpClientManager {
                     );
                     if(data.code == 0){
                         _token = data.data;
+                        config.csrfToken().put(_token);
                     }
                     else{
                         LogUtil.E("获取token失败: " + data.msg);

@@ -6,19 +6,19 @@ package voiddog.org.game24.util;
  */
 public class CalculateAnswerHelper {
 
-    public static boolean judgeAnswer(int[] a){
+    public static String judgeAnswer(int[] a){
         boolean [] used = new boolean[4];
         return dfs(a, used, 0);
     }
 
-    static boolean dfs(int[] a, boolean[] used, int steps){
+    static String dfs(int[] a, boolean[] used, int steps){
         if(steps == 3){
             for(int i = 0; i < 4 ; i++){
-                if(!used[i]){
-                    return a[i] == 24;
+                if(!used[i] && a[i] == 24){
+                    return "24";
                 }
             }
-            return false;
+            return null;
         }
 
         int[] b  = {0,0,0,0};
@@ -28,31 +28,43 @@ public class CalculateAnswerHelper {
                 used[i] = true;
                 for(int j = i+1; j < 4; j++){
                     if(!used[j]){
+                        String s;
                         b[j] = a[i] + a[j];
-                        if(dfs(b, used, steps+1)){
-                            return true;
+                        if((s = dfs(b, used, steps+1)) != null){
+                            s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d+%d)", a[i], a[j]));
+                            return s;
                         }
                         b[j] = a[i] * a[j];
-                        if(dfs(b, used, steps+1)){
-                            return true;
+                        if((s = dfs(b, used, steps+1)) != null){
+                            s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d×%d)", a[i], a[j]));
+                            return s;
                         }
-                        b[j] = a[i] - a[j];
-                        if(b[j] < 0){
-                            b[j] *= -1;
+                        if(a[i] > a[j]){
+                            b[j] = a[i] - a[j];
+                            if((s = dfs(b, used, steps+1)) != null){
+                                s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d-%d)", a[i], a[j]));
+                                return s;
+                            }
                         }
-                        if(dfs(b, used, steps+1)){
-                            return true;
+                        else{
+                            b[j] = a[j] - a[i];
+                            if((s = dfs(b, used, steps+1)) != null){
+                                s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d-%d)", a[j], a[i]));
+                                return s;
+                            }
                         }
                         if(a[j] != 0 && a[i] % a[j] == 0){
                             b[j] = a[i] / a[j];
-                            if(dfs(b, used, steps+1)){
-                                return true;
+                            if((s = dfs(b, used, steps+1)) != null){
+                                s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d÷%d)", a[i], a[j]));
+                                return s;
                             }
                         }
                         if(a[i] != 0 && a[j] % a[i]==0){
                             b[j] = a[j] / a[i];
-                            if(dfs(b, used, steps+1)){
-                                return true;
+                            if((s = dfs(b, used, steps+1)) != null){
+                                s = s.replaceFirst(Integer.toString(b[j]), String.format("(%d÷%d)", a[j], a[i]));
+                                return s;
                             }
                         }
                         b[j] = a[j];
@@ -61,6 +73,6 @@ public class CalculateAnswerHelper {
                 used[i] = false;
             }
         }
-        return false;
+        return null;
     }
 }
