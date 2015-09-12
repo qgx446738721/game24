@@ -6,7 +6,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,6 +31,7 @@ import voiddog.org.game24.event.MarginItemFinishEvent;
 import voiddog.org.game24.fragment.dialog.SystemNotifyDialogFragment;
 import voiddog.org.game24.fragment.dialog.SystemNotifyDialogFragment_;
 import voiddog.org.game24.ui.DragGroupView;
+import voiddog.org.game24.ui.GameButton;
 import voiddog.org.game24.ui.NumberItem;
 import voiddog.org.game24.ui.TitleBar;
 import voiddog.org.game24.util.CalculateAnswerHelper;
@@ -52,8 +52,6 @@ public class GameFragment extends Fragment{
     @ViewById
     DragGroupView game_view;
     @ViewById
-    Button rcb_back, rcb_plus, rcb_sub, rcb_mul, rcb_div, rcb_no_anw;
-    @ViewById
     TitleBar title_bar;
     @FragmentArg
     GameMode mGameMode = GameMode.Nervous;
@@ -66,6 +64,7 @@ public class GameFragment extends Fragment{
     NumberItem firstNumber, secondNumber;
     //操作
     OperationEnum mOperation = null;
+    GameButton mCurrentGameBtn = null;
     //view tag
     int viewTag = 1;
     //计时器
@@ -125,6 +124,13 @@ public class GameFragment extends Fragment{
                 }
             }, 2000, 1000);
         }
+
+        title_bar.setOnLeftClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new AskGameExitEvent());
+            }
+        });
     }
 
     @Override
@@ -317,51 +323,54 @@ public class GameFragment extends Fragment{
         return roundId;
     }
 
-    @Click({R.id.rcb_plus, R.id.rcb_sub, R.id.rcb_mul, R.id.rcb_div})
+    @Click({R.id.gb_plus, R.id.gb_sub, R.id.gb_mul, R.id.gb_div})
     void onOperationButtonClick(View view){
+        if(mCurrentGameBtn != null){
+            if(mCurrentGameBtn != view) {
+                mCurrentGameBtn.hangUpItem();
+                mCurrentGameBtn = (GameButton) view;
+                mCurrentGameBtn.activateItem();
+            }
+        }
+        else{
+            mCurrentGameBtn = (GameButton) view;
+            mCurrentGameBtn.activateItem();
+        }
+
         switch (view.getId()){
-            case R.id.rcb_plus:{
+            case R.id.gb_plus:{
                 mOperation = OperationEnum.Add;
                 break;
             }
-            case R.id.rcb_sub:{
+            case R.id.gb_sub:{
                 mOperation = OperationEnum.Subtraction;
                 break;
             }
-            case R.id.rcb_mul:{
+            case R.id.gb_mul:{
                 mOperation = OperationEnum.Multiplication;
                 break;
             }
-            case R.id.rcb_div:{
+            case R.id.gb_div:{
                 mOperation = OperationEnum.Division;
                 break;
             }
         }
     }
 
-    @Click({R.id.rcb_back, R.id.rcb_no_anw})
-    void onExtraButtonClick(View view){
+    @Click(R.id.gb_no_anw)
+    void onNoAnwButtonClick(){
         if(isGameOver){
             return;
         }
 
-        switch (view.getId()){
-            case R.id.rcb_back:{
-                EventBus.getDefault().post(new AskGameExitEvent());
-                break;
-            }
-            case R.id.rcb_no_anw:{
-                if(hasAnswer){
-                    notifyDialog.setContent("有解的哦");
-                    notifyDialog.show(
-                            getActivity().getFragmentManager(), notifyDialog.getClass().getName()
-                    );
-                }
-                else{
-                    gameClear();
-                }
-                break;
-            }
+        if(hasAnswer){
+            notifyDialog.setContent("有解的哦");
+            notifyDialog.show(
+                    getActivity().getFragmentManager(), notifyDialog.getClass().getName()
+            );
+        }
+        else{
+            gameClear();
         }
     }
 
@@ -491,6 +500,10 @@ public class GameFragment extends Fragment{
                         marginItem(firstNumber, secondNumber, mOperation);
                         firstNumber = secondNumber = null;
                         mOperation = null;
+                        if(mCurrentGameBtn != null){
+                            mCurrentGameBtn.hangUpItem();
+                            mCurrentGameBtn = null;
+                        }
                     }
                 }
                 else if (item.getStatus() == NumberItem.Status.PADDING) {
@@ -516,6 +529,10 @@ public class GameFragment extends Fragment{
             secondNumber = null;
         }
         mOperation = null;
+        if(mCurrentGameBtn != null){
+            mCurrentGameBtn.hangUpItem();
+            mCurrentGameBtn = null;
+        }
     }
 
     /**

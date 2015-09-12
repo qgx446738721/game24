@@ -21,9 +21,6 @@ public class TypefaceHelper {
     }
 
     public static TypefaceHelper getInstance(){
-        if(instance == null){
-            throw new IllegalArgumentException("必须初始化");
-        }
         return instance;
     }
 

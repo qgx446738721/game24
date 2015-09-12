@@ -82,6 +82,12 @@ public class GameActivity extends BaseActivity{
      * 接收到游戏结束事件
      */
     public void onEventMainThread(GameOverEvent event){
+        if(congraDialog.isAdded()) {
+            congraDialog.dismiss();
+        }
+        if(askGameExitDialog.isAdded()) {
+            askGameExitDialog.dismiss();
+        }
         gameOverDialog.show(getFragmentManager(), gameFragment.getClass().getName());
     }
 

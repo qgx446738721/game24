@@ -98,8 +98,8 @@ public class NumberItem extends ImageView
     //padding圆
     GradientDrawable mPaddingCircle;
     Paint mTextPaint;
-    //球的最大大小 150dp
-    int MAX_SIZE = 150;
+    //球的最大大小 200dp
+    int MAX_SIZE = 200;
 
     public NumberItem(Context context) {
         super(context);

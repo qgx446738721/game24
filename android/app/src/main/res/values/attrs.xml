@@ -32,4 +32,9 @@
             <enum name="right" value="8"/>
         </attr>
     </declare-styleable>
+    <!--游戏按钮-->
+    <declare-styleable name="GameButton">
+        <attr name="game_btn_text_active_color" format="color"/>
+        <attr name="game_btn_fontawesome" format="string"/>
+    </declare-styleable>
 </resources>
