@@ -21,6 +21,8 @@ Route::get('get_csrf_token', function(){
 
 Route::post('relax_rank_list', 'GameRankController@getRelaxRankList');
 
+Route::post('nervous_rank_list', 'GameRankController@getNervousRankList');
+
 Route::post('register', 'UserController@registerNewUser');
 
 Route::post('upload_relax_mark', 'GameRankController@saveMarkToRelaxRankList');
