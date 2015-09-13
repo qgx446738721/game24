@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textSize="@dimen/rank_title_size"
+        android:text="@string/rank"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <voiddog.org.game24.ui.LoadMoreBounceListView
+        android:id="@+id/lv_rank_list"
+        android:layout_marginTop="@dimen/default_dis_size"
+        android:layout_marginLeft="@dimen/default_dis_size_big"
+        android:layout_marginRight="@dimen/default_dis_size_big"
+        android:background="@drawable/rank_list_bg"
+        android:listSelector="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rank_list_height"/>
+
+</LinearLayout>

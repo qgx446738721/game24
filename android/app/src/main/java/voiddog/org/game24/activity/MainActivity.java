@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity{
     @ViewById
     MainHeadView main_head;
     @ViewById
-    Button rcb_start;
+    Button rcb_start, rcb_rank;
     @ViewById
     TextView tv_user_name;
 
@@ -141,10 +141,24 @@ public class MainActivity extends BaseActivity{
     void startGame(){
         //只能点击一次
         rcb_start.setOnClickListener(null);
+        rcb_rank.setOnClickListener(null);
         main_head.playExitAnimation(new MainHeadView.OnExitCallBack() {
             @Override
             public void onExit() {
                 GameActivity_.intent(MainActivity.this).start();
+                finish();
+            }
+        });
+    }
+
+    @Click(R.id.rcb_rank)
+    void gotoRankList(){
+        rcb_start.setOnClickListener(null);
+        rcb_rank.setOnClickListener(null);
+        main_head.playExitAnimation(new MainHeadView.OnExitCallBack() {
+            @Override
+            public void onExit() {
+                RankListActivity_.intent(MainActivity.this).start();
                 finish();
             }
         });

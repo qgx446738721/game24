@@ -28,6 +28,11 @@
             android:screenOrientation="portrait"
             android:label="游戏界面"/>
 
+        <activity android:name=".activity.RankListActivity_"
+            android:theme="@style/GameActivityTheme"
+            android:screenOrientation="portrait"
+            android:label="排名列表"/>
+
     </application>
 
 </manifest>

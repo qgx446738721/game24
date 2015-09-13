@@ -335,7 +335,12 @@ public class GameFragment extends Fragment{
      * @return 分数
      */
     int getScore(){
-        return roundId*120+mLeftTime;
+        if(mGameMode == GameMode.Nervous) {
+            return roundId * 120 + mLeftTime;
+        }
+        else{
+            return roundId;
+        }
     }
 
     @Click({R.id.gb_plus, R.id.gb_sub, R.id.gb_mul, R.id.gb_div})
