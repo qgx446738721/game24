@@ -25,6 +25,6 @@ class NervousRank extends Model{
             ->skip($pageSize*$pageId)
             ->take($pageSize)
             ->get();
-        return $rankList;
+        return ['code'=>'0', 'msg'=>'success', 'data'=>$rankList];
     }
 }
