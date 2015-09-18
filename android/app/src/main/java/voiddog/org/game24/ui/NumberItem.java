@@ -32,7 +32,7 @@ import voiddog.org.game24.util.TypefaceHelper;
  */
 public class NumberItem extends ImageView
         implements ValueAnimator.AnimatorUpdateListener, SpringListener{
-    final int MAX_RANDOM_VELOCITY = 2;
+    final int MAX_SPEED = 2;
     final int MARGIN_ANIM_TIME = 300;
     //对应数值的颜色
     final int valueToColor[] = {
@@ -446,10 +446,18 @@ public class NumberItem extends ImageView
             float vx = mV.x;
             float vy = mV.y;
 
-            // 1/6的概率改变速度
             if(mRandom.nextInt(6) < 1){
-                vx = mRandom.nextFloat() * MAX_RANDOM_VELOCITY*2.0f - MAX_RANDOM_VELOCITY;
-                vy = mRandom.nextFloat() * MAX_RANDOM_VELOCITY*2.0f - MAX_RANDOM_VELOCITY;
+                float ax = (mRandom.nextFloat()*2.0f - 1.0f)*0.1f;
+                float ay = (mRandom.nextFloat()*2.0f - 1.0f)*0.1f;
+                vx += ax;
+                vy += ay;
+            }
+
+            if(vx > MAX_SPEED){
+                vx = vx > 0 ? MAX_SPEED : -MAX_SPEED;
+            }
+            if(vy > MAX_SPEED){
+                vy = vy > 0 ? MAX_SPEED : -MAX_SPEED;
             }
 
             float aimX = getX() + vx;
